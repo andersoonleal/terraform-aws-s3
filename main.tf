@@ -1,4 +1,3 @@
-cat > main.tf << 'EOF'
 terraform {
   required_providers {
     aws = {
@@ -27,4 +26,3 @@ resource "aws_s3_bucket_versioning" "this" {
     status = var.versioning_enabled ? "Enabled" : "Suspended"
   }
 }
-EOF

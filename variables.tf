@@ -1,4 +1,3 @@
-cat > variables.tf << 'EOF'
 variable "bucket_name" {
   description = "Nome do bucket S3"
   type        = string
@@ -20,4 +19,3 @@ variable "versioning_enabled" {
   type        = bool
   default     = false
 }
-EOF
