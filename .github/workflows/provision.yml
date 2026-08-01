@@ -1,0 +1,46 @@
+name: Provisionar S3
+
+on:
+  workflow_dispatch:
+    inputs:
+      bucket_name:
+        description: 'Nome do bucket S3 (precisa ser único globalmente)'
+        required: true
+        type: string
+      environment:
+        description: 'Ambiente'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+        default: dev
+      versioning_enabled:
+        description: 'Habilitar versionamento?'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: |
+          terraform apply -auto-approve \
+            -var="bucket_name=${{ inputs.bucket_name }}" \
+            -var="environment=${{ inputs.environment }}" \
+            -var="versioning_enabled=${{ inputs.versioning_enabled }}"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
